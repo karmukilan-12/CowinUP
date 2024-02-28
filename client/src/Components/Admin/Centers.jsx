@@ -10,7 +10,7 @@ const Centers = () => {
     useEffect(() => {
         const fetchAllBooks = async () => {
             try {
-                const res = await axios.get("http://localhost:8800/vaccine");
+                const res = await axios.get("https://cowinup.onrender.com/vaccine");
                 console.log(res.data);
                 setBooks(res.data);
             } catch (err) {
@@ -22,7 +22,7 @@ const Centers = () => {
 
     const handleDelete = async (id) => {
         try {
-            await axios.delete(`http://localhost:8800/vaccine/${id}`);
+            await axios.delete(`https://cowinup.onrender.com/vaccine/${id}`);
             window.location.reload();
         } catch (err) {
             console.log(err);
