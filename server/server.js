@@ -1,6 +1,8 @@
 const express = require("express");
 const cors = require("cors");
 const mysql = require("mysql2");
+const { json } = require('body-parser');
+const { createTransport } = require('nodemailer');
 
 // import express from 'express';
 // import cors from 'cors'
@@ -9,6 +11,36 @@ const mysql = require("mysql2");
 const app = express();
 app.use(cors());
 app.use(express.json());
+
+//app.use(json());
+
+const transporter = createTransport({
+  service: 'gmail',
+  auth: {
+    user: 'karmukilanap.it2021@citchennai.net',
+    pass: 'welcometocit',
+  },
+});
+
+app.post('/send-email', (req, res) => {
+  const { fullName, email, phoneNumber } = req.body;
+
+  const mailOptions = {
+    from: 'karmukilanap.it2021@citchennai.net',
+    to: email,
+    subject: 'COVID Vaccination Slot Confirmation',
+    text: `Dear ${fullName},\n\nYour vaccination slot has been confirmed.\n\nDetails:\nEmail: ${email}\nPhone Number: ${phoneNumber}\n\nThank you for booking with us!`,
+  };
+
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      return res.status(500).send(error.toString());
+    }
+    console.log('Email sent: ' + info.response);
+    res.status(200).send('Email sent successfully');
+  });
+});
+
 
 const db = mysql.createConnection({
   host: "localhost",
@@ -93,3 +125,4 @@ app.put("/vaccine/:id", (req, res) => {
 app.listen(8800, () => {
   console.log("Connected to backend.");
 })
+
